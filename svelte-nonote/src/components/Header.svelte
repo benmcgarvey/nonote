@@ -1,3 +1,26 @@
+<script>
+  import { dbStore } from "../stores/store";
+  import { local } from "../stores/localStore";
+  import { onMount } from "svelte";
+
+  let maybeDbAddress = null;
+  let maybeDbToken = null;
+
+  onMount(async () => {
+    local.useLocalStorage();
+    maybeDbAddress = $local.dbAddress || null;
+    maybeDbToken = $local.dbToken || null;
+  });
+
+  const handleClick = () => {
+    const dbAddress = document.querySelector(".DB").value;
+    const dbToken = document.querySelector(".Token").value;
+    $local["dbAddress"] = dbAddress;
+    $local["dbToken"] = dbToken;
+    dbStore.setCredentials(dbAddress, dbToken);
+  };
+</script>
+
 <style>
   .Header {
     display: flex;
@@ -24,17 +47,19 @@
   .DbAddress {
     display: flex;
     flex: 2;
-    align-items: center;
-    justify-content: flex-start;
+    flex-flow: column nowrap;
+    align-items: stretch;
+    justify-content: center;
   }
 
   .DbAddress > input {
     width: 100%;
     height: 30px;
+    box-sizing: border-box;
     border: 1px solid black;
     border-radius: 25px;
     outline: none;
-    margin: 0;
+    margin: 5px;
     padding: 0 15px;
     font-size: 16px;
   }
@@ -47,7 +72,7 @@
   }
 
   .Fetch > button {
-    margin-left: 10px;
+    margin-left: 20px;
   }
 </style>
 
@@ -58,10 +83,19 @@
       <h1>no-note</h1>
     </div>
     <div class="DbAddress">
-      <input type="text" />
+      <input
+        class="DB"
+        type="text"
+        placeholder="database key"
+        value={maybeDbAddress || null} />
+      <input
+        class="Token"
+        type="text"
+        placeholder="database token"
+        value={maybeDbToken || null} />
     </div>
     <div class="Fetch">
-      <button>Go</button>
+      <button on:click={handleClick}>Go</button>
     </div>
 
   </div>

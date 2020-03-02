@@ -1,36 +1,33 @@
+<script>
+  import { db } from "../stores/store.js";
+</script>
+
 <style>
-  h1,
-  p {
-    text-align: center;
-    margin: 0 auto;
+  .Wrapper {
+    height: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
   }
-
-  h1 {
-    font-size: 2.8em;
-    text-transform: uppercase;
-    font-weight: 700;
-    margin: 0 0 0.5em 0;
-  }
-
-  p {
-    margin: 1em auto;
-  }
-
-  @media (min-width: 480px) {
-    h1 {
-      font-size: 4em;
-    }
+  .Content {
+    width: 80%;
   }
 </style>
 
 <svelte:head>
-  <title>Sapper project template</title>
+  <title>No-note | Forget about it!</title>
 </svelte:head>
 
-<h1>Great success!</h1>
-
-<p>
-  <strong>
-    Try editing this file (src/routes/index.svelte) to test live reloading.
-  </strong>
-</p>
+<div class="Wrapper">
+  <div class="Content">
+    {#if $db}
+      {#await $db}
+        <p>...fetching contents</p>
+      {:then result}
+        <p>{JSON.stringify(result)}</p>
+      {:catch error}
+        <p style="color: red">{error.message}</p>
+      {/await}
+    {:else}Enter your db credentials...{/if}
+  </div>
+</div>
