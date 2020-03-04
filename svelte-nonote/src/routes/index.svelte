@@ -1,5 +1,8 @@
 <script>
-  import { db } from "../stores/store.js";
+  // import { db } from "../stores/store.js";
+  import Notes from "../components/Notes.svelte";
+  import { writable } from "svelte/store";
+  const db = writable(fetch("http://www.mocky.io/v2/5e5fabce310000a9f8afde08"));
 </script>
 
 <style>
@@ -23,8 +26,14 @@
     {#if $db}
       {#await $db}
         <p>...fetching contents</p>
-      {:then result}
-        <p>{JSON.stringify(result)}</p>
+      {:then response}
+        {#await response.text()}
+          <p>...fetching contents</p>
+        {:then body}
+          <Notes notes={JSON.parse(body)} />
+        {:catch error}
+          <p style="color: red">{error.message}</p>
+        {/await}
       {:catch error}
         <p style="color: red">{error.message}</p>
       {/await}
